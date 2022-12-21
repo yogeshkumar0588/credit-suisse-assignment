@@ -1,0 +1,90 @@
+http://www.java2s.com/example/java/lambda-stream/group-employees-by-department.html
+
+https://www.geeksforgeeks.org/convert-the-given-numbers-into-words-in-pl-sql/
+
+Map and Flat map
+Sessions and Transactions in Spring boot
+Sum of salary of employees in the form of map , name nad salary
+Read only List
+How to create Genercis 
+Event driven microservices (SAGA pattern)
+
+
+		// Find duplicate words in a String
+		System.out.println("=====duplicate words in a String=========");
+		String inputString = "Java Java EEZ";
+		String[] stringarray = inputString.split(" ");
+		Map<String, Long> map = Arrays.stream(stringarray)
+				.collect(Collectors.groupingBy(c -> c, Collectors.counting()));
+		map.forEach((k, v) -> System.out.println(k + " : " + v));
+		System.out.println("==============================================");
+		 
+		// Find duplicate characters in a String
+		System.out.println("=====duplicate characters in a String=========");
+		Map < Character, Long > result = inputString
+	            .chars().mapToObj(c -> (char) c)
+	            .collect(Collectors.groupingBy(c -> c, Collectors.counting()));
+		result.forEach((k, v) -> System.out.println(k + " : " + v));
+		
+		// Check if number is prime
+        int temp;
+        int number = 445;
+        boolean isPrime = true;
+        for (int i = 2; i>= number/2; i++) {
+            temp = number%i;
+            if (temp == 0) {
+                isPrime = false;
+                break;
+            }
+        }
+		
+		List<Integer> unsortedList = Arrays.asList(10,1,21,3,6,2);
+		// Sorting in natural order or ascending order
+		List<Integer> sortedListAsc = 
+				unsortedList.stream()
+					.sorted()
+					.collect(Collectors.toList());
+					
+					
+					List<Integer> sortedListDesc = 
+				unsortedList.stream()
+					.sorted(Comparator.reverseOrder())
+					.collect(Collectors.toList());
+		
+		int[] sortedArrayAssendingOrder = IntStream.of(array)
+		        .boxed()
+		        .sorted()
+		        .mapToInt(i -> i)
+		        .toArray();		
+					
+		
+		int[] sortedArrayReversedOrder = IntStream.of(array)
+		        .boxed()
+		        .sorted(Comparator.reverseOrder())
+		        .mapToInt(i -> i)
+		        .toArray();
+		System.out.println("SORTED Array reverse order-->");
+		Arrays.stream(sortedArrayReversedOrder).forEach(e->System.out.print(e + " "));
+		
+		int secondLargestNumber = Arrays
+               .stream(numbers)
+               .boxed()
+               .sorted(Comparator.reverseOrder())
+               .skip(1)
+               .findFirst()
+               .get();
+		
+			Find the unique element in an array of integer pairs.
+					Find the employeee based on Departmen
+					Third Highest salary of emplyee based on department
+					
+					
+					SELECT ename,sal from Employee e1 where 
+        N-1 = (SELECT COUNT(DISTINCT sal)from Employee e2 where e2.sal > e1.sal)
+				
+		
+		
+		JWT
+		
+		
+		
