@@ -1,26 +1,19 @@
 package com.credit.suisse.conroller;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
+import java.io.FileNotFoundException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.credit.suisse.delegate.CreditSuisseDelegate;
+import com.credit.suisse.utility.CreditSuisseCommonUtil;
 
 @RestController
 @RequestMapping("/creditSuisse")
@@ -39,32 +32,29 @@ public class CreditSuisseController {
 		LOGGER.info("Inside getCall()");
 		return new ResponseEntity<>("Test",HttpStatus.OK);
 	}
-	
-	@RequestMapping("/uploadFile")
-	  public ResponseEntity<String> uploadFile() {
-	    String message = "";
-	    try {
-	    	Resource resource=resourceLoader.getResource("classpath:CreditSuisseLogfile.txt");
-	    	File file2 = resource.getFile();
-	    	    
-			List<String> allLines = Files.readAllLines(Paths.get(file2.getAbsolutePath()));
-			
-			String text = "";
-			for (String string : allLines) {
-				text = string;
-			}
-			String[] array = text.split("{");
-			for (String string : array) {
-				System.out.println(string);
-			}
-			
-	    	LOGGER.info("Inside uploadFile()");
 
-	      message = "Uploaded the file successfully: " + file2.getName();
-	      return ResponseEntity.status(HttpStatus.OK).body(message);
-	    } catch (Exception e) {
-	      message = "Could not upload the file: " + ". Error: " + e.getMessage();
-	      return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(message);
-	    }
-	  }
+	/*
+	 * This method is used to upload the file(CreditSuisseLogfile.txt) from src/main/resources location
+	 * which is JOSN format	 * 
+	 * log the data in CreditSuissesServerLog table  what ever is present in CreditSuisseLogfile.txt
+	 * Get the time difference from start and end If time stamp is grater than 4 ms then 
+	 * make the entry in CreditSuissesServerLog table's column alert_flag as 1 other wise make it 0
+	 * 
+	 * */
+	@RequestMapping("/uploadLogFile")
+	public ResponseEntity<String> uploadEventsLogFile() throws FileNotFoundException, InterruptedException {
+
+		String message = "";
+		LOGGER.info(CreditSuisseCommonUtil.UPLOAD_FILE_METHOD_CNTRL_STRT);
+		try {
+			message = creditSuisseDelegate.saveEvents();
+			LOGGER.info(CreditSuisseCommonUtil.UPLOAD_FILE_METHOD_CNTRL_END + "TRY Block");
+			return ResponseEntity.status(HttpStatus.OK).body(message);
+		} catch (Exception e) {
+			message = CreditSuisseCommonUtil.FILE_UPLD_ERR + e.getMessage();
+			LOGGER.info(CreditSuisseCommonUtil.UPLOAD_FILE_METHOD_CNTRL_END + "Catch Block");
+			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(message);
+		}
+
+	}
 }
